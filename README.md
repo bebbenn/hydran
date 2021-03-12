@@ -1,11 +1,9 @@
-# CVE-2020-9484
-POC for CVE-2020-9484
+# Hydran
+Syntax help for Hydra
 <p align="center">
-  <a href="https://github.com/VICXOR/CVE-2020-9484">
-    <img src="https://i.imgur.com/xJDK1kL.png" alt="Logo" width="120" height="80">
+  <a href="https://github.com/bebbenn/hydran">
   </a>
 
-  <h3 align="center">POC for CVE-2020-9484</h3>
 
   <p align="center">
     Hydran
