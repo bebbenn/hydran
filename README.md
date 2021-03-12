@@ -18,7 +18,7 @@ Syntax help for Hydra
 ## Getting Started
 <p align="center">
 1. Clone this repository, then you will be able to use Hydran and modify the source code if needed. <br>
-2. Install Hydra
+2. Install Hydra. <br>
 4. Use script for easy syntax bruteforce.
 </p>
 
